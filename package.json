@@ -1,0 +1,25 @@
+{
+  "name": "comp229-s24-402",
+  "version": "1.0.0",
+  "main": "server.js",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "start": "npm-run-all --parallel start:server start:client",
+    "start:server": "npm --prefix server run dev",
+    "start:client": "npm --prefix client run dev",
+    "build": "npm-run-all --parallel build:server build:client",
+    "build:server": "npm --prefix server run build",
+    "build:client": "npm --prefix client run build",
+    "deploy": ""
+  },
+  "keywords": [],
+  "author": "Thiago Castilho",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
+  }
+}
