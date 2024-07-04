@@ -3,6 +3,9 @@ const generateToken = require('../utils/jwt');
 
 // Register a new user
 exports.registerUser = async(req, res) => {
+
+    console.log("Body Received",req.body);
+
     try {
         const { username, email, password } = req.body;
         const user = new User({username, email, password});

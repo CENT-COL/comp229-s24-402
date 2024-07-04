@@ -25,4 +25,8 @@ app.use(express.json());
 app.use('/api/projects', projectsRoutes);
 app.use('/api/users', usersRoutes);
 
+app.use('/api/data', (req, res, next) => {
+    res.json({ message: 'Hello from the server!' });
+})
+
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
