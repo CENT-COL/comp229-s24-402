@@ -17,7 +17,7 @@ import Login from './pages/login';
 
 
 export default function App() {
-    const { user, setUser } = useState(() => {
+    const [ user, setUser ] = useState(() => {
         const token = localStorage.getItem('token');
         return token ? { token } : null;
     });
@@ -27,7 +27,13 @@ export default function App() {
         if (token) {
             setUser({ token });
         }
-    },[])
+    },[]);
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        setUser(null);
+    }
 
     return (
         <Router>
@@ -57,7 +63,14 @@ export default function App() {
 
                                 // Todo Add logic to have the user name.
                                 <>
-                                  
+                                  <li className="nav-item">
+                                    <span className="navbar-text mr-3">Welcome, {user.username}</span>
+                                  </li>
+                                  <li className="nav-item">
+                                    <button className="btn btn-outline-secondary" onClick={handleLogout} >
+                                        Logout
+                                    </button>
+                                  </li>
                                 </>
 
                                 :

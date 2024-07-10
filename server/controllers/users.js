@@ -13,7 +13,7 @@ exports.registerUser = async(req, res) => {
 
         const token = generateToken(user);
 
-        res.status(201).json({message: 'User created successfully', token});
+        res.status(201).json({message: 'User created successfully', token, user:user.username});
     } catch (error) {
         res.status(400).json({error: error.message})
     }
@@ -35,7 +35,7 @@ exports.loginUser = async (req, res) => {
         }
         const token = generateToken(user);
         
-        res.json({message: 'Login successful', token});
+        res.json({message: 'Login successful', token, username: user.username});
 
     } catch (error) {
         res.status(400).json({error: error.message})
