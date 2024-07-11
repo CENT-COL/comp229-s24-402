@@ -9,7 +9,6 @@ const Projectlist = () => {
     useEffect(() => {
         const fetchProjects = async () => {
           const token = localStorage.getItem('token');
-
           if (!token) {
             console.error('No token found');
             return;
@@ -21,7 +20,6 @@ const Projectlist = () => {
                 'Authorization': `Bearer ${token}`
               }
             });
-
             if (!response.ok) {
               throw new Error('Failed to fetch projects');
             }
