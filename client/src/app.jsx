@@ -7,7 +7,7 @@ import About from './pages/about';
 import Register from './pages/register';
 import Login from './pages/login';
 import Projectlist from './pages/project-list';
-import ProjectDetails from './pages/project-details';
+import ProjectDetails from './pages/project-detail';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
