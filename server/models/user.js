@@ -17,7 +17,15 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-    }
+    }, 
+    otpSecret:{
+        type:String,
+        default:null
+    },
+    is2FAEnabled: {
+        type: Boolean,
+        default: false
+    },
 });
 
 userSchema.pre('save', async function(next) {
