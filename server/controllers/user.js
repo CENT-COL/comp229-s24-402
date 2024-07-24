@@ -119,7 +119,9 @@ exports.verifyOTP = async (req, res) => {
 
     if (isValid) {
         // OTP is valid, proceed with authentication
-        const jwtToken = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '30d'});
+        // const jwtToken = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '30d'});
+
+        const jwtToken = generateToken(user);
 
         // return the JWT token
         res.status(200).json({
