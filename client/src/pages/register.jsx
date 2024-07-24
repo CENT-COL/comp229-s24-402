@@ -12,7 +12,7 @@ const Register = () => {
     const [step, setStep] = useState(1); // Step 1: Registration, Step 2: OTP Setup
     const [error, setError] = useState('');
     const navigate = useNavigate();
-    const apiUrl = import.meta.env.VITE_API_URL || '/api';
+    const apiUrl = '/api';
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -35,7 +35,7 @@ const Register = () => {
             const data = await response.json();
             console.log('Registration successful', data);
             // Proceed to 2FA setup
-            await setup2FA(data.email);
+            await setup2FA(form.email);
             setStep(2);
         } catch (error) {
             setError(error.message);
