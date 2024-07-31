@@ -1,64 +1,41 @@
 import React,{useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {collection, getDocs, deleteDoc, doc} from 'firebase/firestore';
+import {db} from '../firebase';
+import { useAuth } from '../contexts/auth-context';
 
 const Projectlist = () => {
     const [projects, setProjects] = useState([]);
-    const apiUrl = import.meta.env.VITE_API_URL || '/api';
     const navigate = useNavigate();
+    const { currentUser } = useAuth();
 
     useEffect(() => {
+        if(!currentUser){
+          navigate('/login');
+          return;
+        }
+
         const fetchProjects = async () => {
-          const token = localStorage.getItem('token');
-          if (!token) {
-            console.error('No token found');
-            return;
-          }
-    
           try {
-            const response = await fetch(`${apiUrl}/projects`, {
-              headers: {
-                'Authorization': `Bearer ${token}`
-              }
-            });
-            if (!response.ok) {
-              throw new Error('Failed to fetch projects');
-            }
-            const data = await response.json();
-            setProjects(data);
+            const querySnapshot = await getDocs(collection(db, 'projects'));
+            const projectsData = querySnapshot.docs.map(doc => ({...doc.data(), _id: doc.id}));
+            setProjects(projectsData);
           } catch (error) {
-            console.error('Error fetching projects:', error);
+            console.error('Error fetching projects', error);
           }
-        };
-    
+        }
         fetchProjects();
-      }, [apiUrl]);
+
+      }, [currentUser, navigate]);
 
 
     const handleDelete = async (id) => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            navigate('/login');
-            return;
-        }
-
         try {
-            const response = await fetch(`${apiUrl}/projects/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to delete project');
-            }
-
-            setProjects(projects.filter(project => project._id !== id));
-
+          await deleteDoc(doc(db, 'projects', id))
+          setProjects(projects.filter(project => project._id !== id));
         } catch (error) {
-            console.error("Error deleting project", error);
+          console.error('Error deleting project', error);
         }
-    
     }
 
 
