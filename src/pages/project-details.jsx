@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import {db} from '../firebase';
+import {doc, getDoc, setDoc, addDoc, collection} from 'firebase/firestore';
 
 const ProjectDetails = () => {
     const [project, setProject] = useState({
@@ -10,42 +12,32 @@ const ProjectDetails = () => {
     });
 
     const {id} = useParams();
-    const apiUrl = import.meta.env.VITE_API_URL || '/api';
     const navigate = useNavigate();
 
     useEffect(() => {
+      if(id){
         const fetchProject = async () => {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                navigate('/login');
-                return;
+          try {
+            const docRef = doc(db, 'projects', id);
+            const docSnap = await getDoc(docRef);
+           
+            if(docSnap.exists()){
+              const data = docSnap.data();
+              setProject({
+                name: data.name,
+                description: data.description,
+                startDate: data.startDate,
+                endDate: data.endDate
+              });
             }
-
-            try {
-                const response = await fetch(`${apiUrl}/projects/${id}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch project');
-                }
-
-                const data = await response.json();
-                setProject({
-                    name: data.name,
-                    description: data.description,
-                    startDate: data.startDate.split('T')[0],
-                    endDate: data.endDate.split('T')[0]
-                });
-            } catch (error) {
-                console.error('Error fetching project:', error);
-            }
-        };
+          } catch (error) {
+            console.log('Error fetching project:', error);
+          }
+        }
 
         fetchProject();
-    }, [apiUrl, id]);
+      }
+    }, [id]);
 
 
     const handleChange = (e) => {
@@ -55,32 +47,16 @@ const ProjectDetails = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const token = localStorage.getItem('token');
-        if (!token) {
-            navigate('/login');
-            return;
-        }
-
-        const method = id ? 'PUT' : 'POST';
-        const url = id ? `${apiUrl}/projects/${id}` : `${apiUrl}/projects`;
-
         try {
-            const response = await fetch(url, {
-                method,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(project)
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to update project');
-            }
-
-            navigate('/projects');
+          if(id){
+            const docRef = doc(db, 'projects', id);
+            await setDoc(docRef, project);
+          } else {
+            await addDoc(collection(db, 'projects'),project);
+          }
+          navigate('/projects');
         } catch (error) {
-            console.error('Error updating project:', error);
+          console.error('Error saving project:', error);
         }
     };
 

@@ -7,29 +7,29 @@ import About from './pages/about';
 import Register from './pages/register';
 import Login from './pages/login';
 import Projectlist from './pages/project-list';
-import ProjectDetails from './pages/project-detail';
+import ProjectDetails from './pages/project-details';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import WebSocketComponent from './pages/websocket';
+import PrivateRoute from './pages/private-route';
+import { logout } from './auth';
 
 function App() {
-  const [user, setUser] = useState(() => {
-    const token = localStorage.getItem('token');
-    const username = localStorage.getItem('username');
-    return token && username ? { username } : null;
-  });
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     const username = localStorage.getItem('username');
+  
     if (token && username) {
-      setUser({ username });
+      setUser({ username }); 
     }
-  }, []);
+  }, []); 
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    setUser(null);
     localStorage.removeItem('token');
     localStorage.removeItem('username');
-    setUser(null);
+    await logout();
   };
 
   return (
@@ -88,12 +88,12 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/services" element={<Services />} />
-            <Route path="/projects" element={<Projectlist />} />
-            <Route path="/project-details" element={<ProjectDetails />} />
-            <Route path="/project-details/:id" element={<ProjectDetails />} />
+            <Route path="/projects" element={<PrivateRoute><Projectlist /></PrivateRoute>} />
+            <Route path="/project-details" element={<PrivateRoute><ProjectDetails /></PrivateRoute>} />
+            <Route path="/project-details/:id" element={<PrivateRoute><ProjectDetails /></PrivateRoute>} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/about" element={<About />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/register" element={<Register setUser={setUser} />} />
             <Route path="/login" element={<Login setUser={setUser} />} />
             <Route path="/wschat" element={<WebSocketComponent />} />
 
