@@ -34,7 +34,7 @@ exports.login = async (req, res) => {
         }
 
         const token = generateToken(user);
-        res.json({ message: 'User logged in successfully', token, username: user.username });
+        res.json({ message: 'User logged in successfully', token, username: user.username, is2FAEnabled: user.is2FAEnabled });
 
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -87,7 +87,7 @@ exports.verify2FASetup = async (req, res) => {
         return res.status(400).json({ message: '2FA is not setup for this user' });
     }
 
-    const isValid = otplib.authenticator.check(token, secrest);
+    const isValid = otplib.authenticator.check(token, secret);
 
     if(isValid){
         // Mark the user as having 2FA enabled
@@ -119,7 +119,9 @@ exports.verifyOTP = async (req, res) => {
 
     if (isValid) {
         // OTP is valid, proceed with authentication
-        const jwtToken = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '30d'});
+        // const jwtToken = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '30d'});
+
+        const jwtToken = generateToken(user);
 
         // return the JWT token
         res.status(200).json({

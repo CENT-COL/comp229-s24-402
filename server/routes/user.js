@@ -9,6 +9,6 @@ router.post('/login', userController.login);
 // Define routes for 2FA
 router.post('/setup-2fa', userController.setup2FA);
 router.post('/verify-2fa-setup', userController.verify2FASetup);
-router.post('/verity-otp', userController.verifyOTP);
+router.post('/verify-otp', userController.verifyOTP);
 
 module.exports = router;

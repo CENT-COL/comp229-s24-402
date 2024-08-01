@@ -9,6 +9,7 @@ import Login from './pages/login';
 import Projectlist from './pages/project-list';
 import ProjectDetails from './pages/project-detail';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import WebSocketComponent from './pages/websocket';
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -55,6 +56,10 @@ function App() {
               <li className="nav-item">
                 <Link className="nav-link" to="/about">About</Link>
               </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/wschat">WebSockets</Link>
+              </li>
+
             </ul>
             <ul className="navbar-nav ml-auto">
               {user ? (
@@ -90,6 +95,8 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login setUser={setUser} />} />
+            <Route path="/wschat" element={<WebSocketComponent />} />
+
           </Routes>
         </div>
         <nav className="navbar fixed-bottom navbar-light bg-light">
